@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order History</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #loading {
+      display: none;
+      font-size: 18px;
+      color: red;
+    }
+    .order-item {
+      border: 2px solid #ddd;
+      padding: 10px;
+      margin: 10px auto;
+      width: 50%;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Order History</h2>
+  <button onclick="fetchOrderHistory()">Load Order History</button>
+  <p id="loading">Loading orders... (This may take a while)</p>
+  <div id="orderList"></div>
+
+  <script>
+    function fetchOrderHistory() {
+      document.getElementById("loading").style.display = "block";
+
+      fetch('/order-history')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("loading").style.display = "none";
+          let orderList = document.getElementById("orderList");
+          orderList.innerHTML = "";
+
+          data.forEach(order => {
+            let orderDiv = document.createElement("div");
+            orderDiv.className = "order-item";
+            orderDiv.innerHTML = `<h3>Order ID: ${order.id}</h3><p>Item: ${order.item}</p>`;
+            orderList.appendChild(orderDiv);
+          });
+        })
+        .catch(error => {
+          document.getElementById("loading").style.display = "none";
+          alert("Failed to load order history. Try again later.");
+        });
+    }
+  </script>
+</body>
+</html>
